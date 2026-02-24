@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>もしうんこがなければウィンナーはなかった</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #12121a;
+      --bg-card: #1a1a2e;
+      --text-primary: #e0ddd5;
+      --text-secondary: #8a8a9a;
+      --accent: #4a9eff;
+      --accent-dim: #2a5a9a;
+      --gold: #c4a35a;
+      --chapter-border: #2a2a3e;
+      --serif: 'Noto Serif JP', 'Hiragino Mincho ProN', serif;
+      --sans: 'Zen Kaku Gothic New', 'Hiragino Kaku Gothic ProN', sans-serif;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--serif);
+      font-size: 17px;
+      line-height: 1.95;
+      min-height: 100vh;
+    }
+
+    /* ─── Header ─── */
+    .hero {
+      position: relative;
+      text-align: center;
+      padding: 100px 20px 80px;
+      background: linear-gradient(180deg, #1a2a4a 0%, #0f1a2f 100%);
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 30%, rgba(120,180,255,0.15) 0%, transparent 70%);
+    }
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 5vw, 3.2rem);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #ffffff;
+      text-shadow: 0 2px 20px rgba(100,160,255,0.3);
+      margin-bottom: 12px;
+      position: relative;
+    }
+    .hero-sub {
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      color: #b0c4de;
+      letter-spacing: 0.15em;
+    }
+    .hero-line {
+      width: 60px; height: 1px;
+      background: var(--gold);
+      margin: 28px auto 0;
+    }
+
+    /* ─── Digest Carousel ─── */
+    .carousel-wrap {
+      background: linear-gradient(180deg, #0f1a2f 0%, #0a0e18 100%);
+      padding: 24px 0 20px;
+      overflow: hidden;
+    }
+    .carousel-track {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      padding: 0 calc((100vw - min(85vw, 600px)) / 2);
+      scrollbar-width: none;
+    }
+    .carousel-track::-webkit-scrollbar { display: none; }
+    .carousel-slide {
+      flex: 0 0 min(85vw, 280px);
+      scroll-snap-align: center;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      text-decoration: none;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      transition: transform 0.2s;
+      aspect-ratio: 3/2;
+    }
+    .carousel-slide:active { transform: scale(0.97); }
+    .carousel-slide img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .carousel-caption {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,0.85));
+      padding: 28px 12px 10px;
+      color: #fff;
+      font-size: 0.85rem;
+      font-family: var(--serif);
+      line-height: 1.4;
+    }
+    .carousel-ch {
+      display: inline-block;
+      font-size: 0.7rem;
+      color: var(--gold);
+      margin-right: 6px;
+      font-family: var(--sans);
+      letter-spacing: 0.06em;
+    }
+    .carousel-dots {
+      text-align: center;
+      padding-top: 12px;
+    }
+    .carousel-dot {
+      display: inline-block;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.25);
+      margin: 0 4px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+    }
+    .carousel-dot.active {
+      background: var(--gold);
+      transform: scale(1.3);
+    }
+    @media (min-width: 600px) {
+      .carousel-slide { flex: 0 0 280px; }
+      .carousel-track { padding: 0 calc((100vw - 900px) / 2); gap: 18px; }
+    }
+
+    /* ─── Navigation ─── */
+    .nav-bar {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10,10,15,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--chapter-border);
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      overflow-x: auto;
+      font-family: var(--sans);
+      font-size: 0.8rem;
+    }
+    .nav-bar .nav-title {
+      color: var(--gold);
+      font-weight: 700;
+      white-space: nowrap;
+      margin-right: 8px;
+    }
+    .nav-bar a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      white-space: nowrap;
+      padding: 4px 10px;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+    .nav-bar a:hover {
+      color: var(--accent);
+      background: rgba(74,158,255,0.1);
+    }
+
+    /* ─── TOC ─── */
+    .toc {
+      max-width: 700px;
+      margin: 60px auto 40px;
+      padding: 0 20px;
+    }
+    .toc h3 {
+      font-family: var(--sans);
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .toc-item {
+      display: flex; align-items: center; gap: 16px;
+      padding: 14px 18px;
+      color: var(--text-primary);
+      text-decoration: none;
+      border-left: 2px solid var(--chapter-border);
+      transition: all 0.25s;
+      font-family: var(--sans);
+      font-size: 0.95rem;
+    }
+    .toc-item:hover {
+      border-color: var(--accent);
+      background: rgba(74,158,255,0.04);
+      padding-left: 24px;
+    }
+    .toc-num {
+      font-size: 0.75rem;
+      color: var(--accent-dim);
+      font-weight: 700;
+      min-width: 20px;
+    }
+
+    /* ─── Characters ─── */
+    .characters {
+      max-width: 700px;
+      margin: 40px auto 60px;
+      padding: 0 20px;
+    }
+    .characters h3 {
+      font-family: var(--sans);
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+    .char-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+    }
+    .char-card {
+      background: var(--bg-card);
+      border: 1px solid var(--chapter-border);
+      border-radius: 8px;
+      padding: 18px;
+    }
+    .char-name {
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+    .char-meta {
+      font-family: var(--sans);
+      font-size: 0.75rem;
+      color: var(--accent);
+      margin-bottom: 8px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .char-meta span {
+      background: rgba(74,158,255,0.1);
+      padding: 1px 8px;
+      border-radius: 4px;
+    }
+    .char-appearance {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 6px;
+      border-left: 2px solid var(--chapter-border);
+      padding-left: 10px;
+    }
+    .char-desc {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ─── Divider ─── */
+    .section-divider {
+      width: 40px; height: 1px;
+      background: var(--chapter-border);
+      margin: 0 auto;
+    }
+
+    /* ─── Chapter ─── */
+    .chapter {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 80px 20px;
+      border-top: 1px solid var(--chapter-border);
+    }
+    .chapter-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .chapter-number {
+      font-family: var(--sans);
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      color: var(--accent-dim);
+      display: block;
+      margin-bottom: 8px;
+    }
+    .chapter-title {
+      font-family: var(--serif);
+      font-size: clamp(1.3rem, 3vw, 1.8rem);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    .chapter-image {
+      margin: 0 -20px 40px;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid var(--chapter-border);
+    }
+    .chapter-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+      opacity: 0.92;
+    }
+    .chapter-body p {
+      margin-bottom: 1.2em;
+      text-indent: 1em;
+      text-align: justify;
+    }
+    .chapter-body p:empty {
+      display: none;
+    }
+
+    /* ─── Footer ─── */
+    .footer {
+      text-align: center;
+      padding: 60px 20px;
+      font-family: var(--sans);
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      border-top: 1px solid var(--chapter-border);
+    }
+
+    /* ─── Reading mode toggle ─── */
+    .mode-toggle {
+      position: fixed; bottom: 20px; right: 20px; z-index: 200;
+      background: var(--bg-card);
+      border: 1px solid var(--chapter-border);
+      color: var(--text-secondary);
+      font-family: var(--sans);
+      font-size: 0.75rem;
+      padding: 8px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .mode-toggle:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+
+    /* --- TTS Read Aloud --- */
+    .tts-fab {
+      position: fixed; bottom: 80px; right: 20px; z-index: 200;
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--accent); color: #fff; border: none;
+      font-size: 22px; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+      transition: all 0.3s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .tts-fab:hover { transform: scale(1.1); }
+    .tts-fab.speaking { background: #e74c3c; animation: tts-pulse 1.5s infinite; }
+    @keyframes tts-pulse {
+      0%,100% { box-shadow: 0 4px 16px rgba(231,76,60,0.4); }
+      50% { box-shadow: 0 4px 24px rgba(231,76,60,0.7); }
+    }
+    .tts-bar {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+      background: rgba(20,20,30,0.95); backdrop-filter: blur(12px);
+      border-top: 1px solid var(--chapter-border);
+      padding: 10px 16px; display: none;
+      align-items: center; gap: 10px;
+      font-family: var(--sans); font-size: 0.85rem;
+    }
+    .tts-bar.active { display: flex; flex-wrap: wrap; }
+    .tts-bar button {
+      background: none; border: 1px solid var(--text-secondary);
+      color: var(--text-primary); border-radius: 6px;
+      padding: 6px 12px; cursor: pointer; font-size: 0.8rem;
+      white-space: nowrap; transition: all 0.2s;
+    }
+    .tts-bar button:hover { border-color: var(--accent); color: var(--accent); }
+    .tts-bar .tts-info {
+      flex: 1; color: var(--text-secondary);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      min-width: 80px;
+    }
+    .tts-bar .tts-speed {
+      display: flex; align-items: center; gap: 4px;
+      color: var(--text-secondary); font-size: 0.75rem;
+    }
+    .tts-bar .tts-speed input { width: 60px; accent-color: var(--accent); }
+    body.light .tts-bar {
+      background: rgba(245,245,240,0.95); border-top-color: #ddd;
+    }
+    body.light .tts-bar button { border-color: #999; color: #333; }
+    body.light .tts-bar .tts-info { color: #666; }
+
+    /* ─── Light mode ─── */
+    body.light {
+      --bg-primary: #f5f0e8;
+      --bg-secondary: #ebe5d9;
+      --bg-card: #fff;
+      --text-primary: #2a2a2a;
+      --text-secondary: #6a6a6a;
+      --chapter-border: #d5cfc3;
+      --accent: #2563eb;
+      --accent-dim: #6b9eff;
+      --gold: #8a6d2b;
+    }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 600px) {
+      body { font-size: 15px; }
+      .chapter { padding: 50px 16px; }
+    }
+
+    /* ─── Scroll progress ─── */
+    .scroll-progress {
+      position: fixed; top: 0; left: 0; z-index: 200;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--gold));
+      width: 0%;
+      transition: width 0.1s;
+    }
+  </style>
+</head>
+<body>
+  <div class="scroll-progress" id="progress"></div>
+
+  <header class="hero">
+    <h1 class="hero-title">もしうんこがなければウィンナーはなかった</h1>
+    <p class="hero-sub">GENERATED WITH LOCAL AI — OLLAMA + STABLE DIFFUSION</p>
+    <div class="hero-line"></div>
+  </header>
+
+  <nav class="nav-bar">
+    <span class="nav-title">目次</span>
+    <a href="#chapter-1">第1章</a><a href="#chapter-2">第2章</a><a href="#chapter-3">第3章</a><a href="#chapter-4">第4章</a><a href="#chapter-5">第5章</a><a href="#chapter-6">第6章</a><a href="#chapter-7">第7章</a><a href="#chapter-8">第8章</a>
+  </nav>
+
+  <div class="toc">
+    <h3>— 目次 —</h3>
+        <a href="#chapter-1" class="toc-item"><span class="toc-num">1</span><span class="toc-label">ウィンナーの不在</span></a>
+        <a href="#chapter-2" class="toc-item"><span class="toc-num">2</span><span class="toc-label">ウィンナーについての話題</span></a>
+        <a href="#chapter-3" class="toc-item"><span class="toc-num">3</span><span class="toc-label">製造工場の調査</span></a>
+        <a href="#chapter-4" class="toc-item"><span class="toc-num">4</span><span class="toc-label">排泄物処理装置の謎</span></a>
+        <a href="#chapter-5" class="toc-item"><span class="toc-num">5</span><span class="toc-label">栄養素分離技術との関連性</span></a>
+        <a href="#chapter-6" class="toc-item"><span class="toc-num">6</span><span class="toc-label">文明の進歩と退行</span></a>
+        <a href="#chapter-7" class="toc-item"><span class="toc-num">7</span><span class="toc-label">排泄物の欠如への気づき</span></a>
+        <a href="#chapter-8" class="toc-item"><span class="toc-num">8</span><span class="toc-label">忌まわしい真実</span></a>
+  </div>
+
+  <div class="characters">
+    <h3>— 登場人物 —</h3>
+    <div class="char-grid">
+      <div class="char-card">
+        <div class="char-name">田中太郎</div>
+        <div class="char-meta"><span>主人公</span><span>25歳</span></div>
+        <div class="char-appearance">メガネをかけ、髪は短く切りそろえられた整った顔立ち。黒いＴシャツとジーパンというシンプルなスタイル。</div>
+        <div class="char-desc">好奇心が強く、世界の違和感に気づく人物</div>
+      </div>
+      <div class="char-card">
+        <div class="char-name">鈴木智美</div>
+        <div class="char-meta"><span>サブキャラ</span><span>30歳</span></div>
+        <div class="char-appearance">ブラウンのコートを纏い、ブラウンのパンツに黒い靴。長めの髪を束ねている。</div>
+        <div class="char-desc">現状維持派で、変化への抵抗が強い</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <main>
+
+    <section class="chapter" id="chapter-1">
+      <div class="chapter-header">
+        <span class="chapter-number">第1章</span>
+        <h2 class="chapter-title">ウィンナーの不在</h2>
+      </div>
+      
+      <div class="chapter-body">
+        <p>第1章　ウィンナーの不在</p>
+
+        <p>薄らと霧が立ち込める朝。窓ガラスに貼られた湿った音。リビングルームで、田中太郎はキッチンへ向かう足取りを進めた。</p>
+
+        <p>冷蔵庫を開けると、そこには昨日と同じように様々な食品が並んでいた。卵、牛乳、パン、そしていつもなら目立つウィンナーの位置にはただ空虚な包み袋だけがある。</p>
+        <p>朝食の準備をしている妻の智美に声をかける。</p>
+        <p>「何かあったか？　今日はまだウィンナーがないんだ」</p>
+        <p>「あぁ、もう売り切れだよ。最近はそんなことよくある」</p>
+
+        <p>彼女の説明が聞こえつつも、太郎にはその言葉よりも冷たい朝空とテーブルの上に広がる空間の方が重く感じられた。</p>
+        <p>食卓に並んだ卵やパンとは異なり、ウィンナーだけが存在しない。それはまるで毎日続く日常が突然止まったような感覚だった。</p>
+
+        <p>「そういえば」と智美は言う。「最近、排泄に関連したものは全て製造停止らしいよ」</p>
+
+        <p>彼女の言葉を聞きながらも、太郎の視線は依然としてウィンナー不在に焦点を当てている。</p>
+        <p>空っぽになった包み袋が、なぜか静寂の中で音色高く鳴っているようだった。</p>
+
+        <p>「でも」と智美。「そんなこと気にするな。他にもたくさん美味しいものが食べられるよ」</p>
+
+        <p>その言葉を受け取る頃には、太郎の唇は既にウィンナーがあったはずの場所を指す形になっていた。</p>
+        <p>彼女の背中に視線を向けると、そこで流れる時間は完全に停止していた。</p>
+
+        <p>冷たい朝空の下で、食卓が静まり返っている。光も音もなく、ただ存在しないものが強く意識されるような空間だった。</p>
+      </div>
+    </section>
+    <section class="chapter" id="chapter-2">
+      <div class="chapter-header">
+        <span class="chapter-number">第2章</span>
+        <h2 class="chapter-title">ウィンナーについての話題</h2>
+      </div>
+      
+      <div class="chapter-body">
+        <p>第2章　ウィンナーについての話題</p>
+
+        <p>風が通り抜ける。街路樹から落ち葉が舞い上がり、その下で小さな渦を作る。太郎は公園のベンチに座り、手にはポケットサイズのスマートフォンを握っていた。「今日も寒いね」という近所のおばさんとの会話の中でも、彼の視線は街角にあるウィンナーショップへと向かっている。</p>
+
+        <p>「どうしたんだ？いつもより真剣そうだな」友人の佐藤がやってくる。太郎と同じく25歳で、彼らは大学時代からの付き合いだった。「昨日から売っていないって気づいたんだ」と彼の眉間を指でつつくようにして答える。「ウィンナー」</p>
+
+        <p>「え？」佐藤が目を見開いて言った。「いつから売り切れてるのか？」「一週間くらい前」太郎はスマホを見て、もう一度確認する。</p>
+
+        <p>彼ら二人とも既に会社勤めをしており、この街の日常を過ごしている。だが、何か異変を感じるとすぐにそれを口にするのが好きだった。それが彼らにとって、生活の中に必要な感覚性を保つ一つの方法だという認識があったからである。「君も気づいていたのか？」太郎が首肯する。</p>
+
+        <p>「あそこまで行けばまだあるだろう」佐藤はウィンナーショップを指し示した。だが彼自身、その先にある商品棚を見ることはなかった。彼ら二人とも既に、この街での日常の一部と化していたウィンナーについて語り合いながら、それが突然存在しないことに気付いた。</p>
+
+        <p>太郎は立ち上がり、佐藤と共に歩き出す。「君が気づくまで僕もわからなかったんだ」彼は言った。「普段だったら、買う前に確認する。だから一週間経って気づいてる」</p>
+
+        <p>二人の会話の中、公園に咲いている冬桜の小さな花びらが風に乗って舞い降りてくる。</p>
+
+        <p>「でも何だかこう……気分悪いな」佐藤は言った。「この街でウィンナーを食べない日なんてなかったから」</p>
+
+        <p>公園からは遠く、ビル群とスクラム状に並んだ店舗の向こう側まで見渡すことができる。その景色の中で、二人が注目しているのは一つだけだ。</p>
+
+        <p>「確かにそうだ」太郎は言った。「君たちも気づいたことがある？」彼は友人に尋ねた。「僕ら以外にも」</p>
+
+        <p>佐藤はしばし考え込んだ後、「さあ……わからないな」と答えた。「でも他の店舗で、ウィンナーが見当たらなくなることは絶対にないと思っていたんだ」彼の声には少しだけ困惑があった。</p>
+
+        <p>「それにしても君たちはいつも通りだね。普通ならそんなこと気にしないよね」「そうかもしれない。ただ……今までそれが普通だったからさ」と太郎は言った。「何か変わった気がする」</p>
+
+        <p>冬空が薄暗く、風に揺れる冬桜の葉音と足下を走る人々の歩みが公園全体を包んでいた。</p>
+
+        <p>「君たち以外にも話す人がいるか？」「まだ誰とも話していない」太郎は言った。「ただ……気になる。僕たちはどうして気づくことができたのか」</p>
+
+        <p>風に揺れる冬桜の木々、その下で二人は歩みを止める。「もしウィンナーがないとしたら……それ自体が大きな問題になるんじゃないかな？」彼が続け、「君は何を考えている？」「正直なところ……僕もわからないんだ」佐藤は言った。</p>
+
+        <p>公園の端から道路へ戻り、彼らは街角にあるウィナーショップを通過する。店内には一人客もいない静けさがあった。「確かにそうだ」と太郎が呟く声だけが響いた。</p>
+
+        <p>「でも君たち以外にも同じように思っている人がいる気がしてならない」彼が言った。「ただ……それが表立つまで、時間がかかるのかな」</p>
+
+        <p>二人はウィナーショップの前に立ち止まり、店内をもう一度見回す。すると太郎がポケットからスマートフォンを取り出し、友人にもそれを指差した。</p>
+
+        <p>「何だ？」「誰か宛てにメッセージ送るつもりなんだ」彼が言った。「このことを他の人に伝えよう」</p>
+
+        <p>佐藤は彼の言葉を聞き、頷いた後、「そうだな」と答えた。「君たち以外にも同じように思っている人がいるんだね」その会話の中で冬桜から落ちてきた花びらが二人の肩に優しく触れた。</p>
+
+        <p>彼らは立ち去りながらもまだ振り返らず、ウィナーショップを遠ざけていった。街角には風と冬桜の音だけが響き渡る。</p>
+      </div>
+    </section>
+    <section class="chapter" id="chapter-3">
+      <div class="chapter-header">
+        <span class="chapter-number">第3章</span>
+        <h2 class="chapter-title">製造工場の調査</h2>
+      </div>
+      
+      <div class="chapter-body">
+        <p>第3章　製造工場の調査</p>
+
+        <p>雨がようやく止んだ。路面にはまだ水たまりができていて、靴音が澄んで聞こえた。太郎と佐藤は傘もさずに歩いている。彼らの足元からは蒸気が立ち上っていた。</p>
+
+        <p>「ここだ」</p>
+        <p>佐藤の声に振り返る。</p>
+        <p>工場の外壁は鉄製で錆びついているように見え、その間を風が唸っている。煙突から出される白い排気ガスは空へと昇っていく。「窓からは中の様子も見える」と言った。</p>
+
+        <p>「ウィンナーを作る部屋ってどこかな」</p>
+        <p>太郎の視線には不安げな表情があった。</p>
+        <p>二人とも工場の中を見ることは許可されていない。だから、彼らがここで目撃することができるものは限られている。</p>
+
+        <p>内部は薄暗く、照明は機械の動きを照らす程度しかなかった。それでもそこでは作業員たちが黙々と働いているのがわかった。「ウィンナーを作る部屋も同じように無音か？」</p>
+        <p>「そうなるだろうな」佐藤が言った。</p>
+        <p>二人は工場から少し離れた路地裏へ行き、そこで話をする。</p>
+
+        <p>「製造ラインをチェックしてみよう」と太郎が提案した。「工場の外でも情報収集ができるかもしれない」</p>
+
+        <p>彼らは隠れて作業員たちに聞き込み調査を行う。しかし誰もウィンナーを作る部屋について詳しいことは教えてくれなかった。</p>
+        <p>一言だけ告げて去っていった。</p>
+
+        <p>太郎たちは次々と製造工場の周りを調べていたが、そこで見つけられたのは無味乾燥な風景しか存在しなかった。そこから漏れる情報は皆無だった。「なんだか妙だ」と佐藤。</p>
+        <p>「でもここで諦めるわけにはいかない」</p>
+        <p>太郎もそう思い返した。</p>
+
+        <p>彼らは製造工場の裏口へと向かい、そこの塀を越えた。そこで中を見ることは可能になったが、そこからはあまりにも無機質な光景しか見ることができなかった。</p>
+        <p>「ウィンナーを作る部屋がないのか？」と太郎。</p>
+        <p>「でもそれが原因か」と佐藤。</p>
+
+        <p>二人は製造工場の内部を探し求めていたが、その内側から何らかの答えを引き出すことはできず、「この街にはもうウィンナーはない」</p>
+        <p>それだけ確認した。「私たちがしなければならないことが増えたね」</p>
+
+        <p>太郎と佐藤は再び道路に出てきた。彼らは工場へ向けて歩き続けていた。</p>
+        <p>その光景は、どこまでも続くように見えた。</p>
+      </div>
+    </section>
+    <section class="chapter" id="chapter-4">
+      <div class="chapter-header">
+        <span class="chapter-number">第4章</span>
+        <h2 class="chapter-title">排泄物処理装置の謎</h2>
+      </div>
+      
+      <div class="chapter-body">
+        <p>第4章　排泄物処理装置の謎</p>
+
+        <p>夕闇が静寂に包み込む街。薄暗いアパートメントの一室で、太郎と智美は机に向かい資料を探していた。窓際には灯りを落としたLEDランプだけが点滅し、揺らぐ影を作り出す。</p>
+
+        <p>「これだ」</p>
+        <p>紙面を開いた瞬間、智美の指先に光る文字があった。「排泄物処理装置」という項目が目に入ると、二人は言葉もなく互いを見つめ合った。静かな室内で時計の針が秒刻み音を立てている。</p>
+
+        <p>「どうしてそんなものを？」</p>
+        <p>太郎は眉根を寄せたまま呟いた。</p>
+        <p>智美は資料から顔を持ち上げて答えた。「情報源によれば、その装置を利用することで排泄物から有用な栄養素を取り出すことができるとある」</p>
+
+        <p>薄汚れた紙面に目を通す二人の姿。手元が動く度にページを摩り立て音がする。</p>
+        <p>「しかし」</p>
+        <p>太郎は資料を見つめながら続けた。「ここでは、その装置を使って排泄物から得られる栄養素と不要成分を取り分けるという仕組みがあるそうだ」</p>
+
+        <p>智美は眉間の皺を解いて頷いた。彼女は紙面に視線を戻したが、「そうすると」と口を開く。「この街ではその装置がないため、排泄物から栄養素を取り出すことができず」</p>
+        <p>「ウィンナーも作れない理由になるね」</p>
+
+        <p>智美の言葉で二人は互いを見つめ合う。薄暗さの中で瞳に光る想いが交差する。</p>
+        <p>「でも」太郎は呟いた。「なぜそんな装置が必要なのか？排泄物なんて無視すればいいじゃないか」</p>
+        <p>それに対して、智美もまた眉間に皺を寄せた。「その通りだけど」彼女は言葉を探りながら言った。「現状維持が求められるこの社会では、変革に対する恐怖がある。新しい技術を利用することで新たな問題に直面する可能性もあるから」</p>
+
+        <p>二人の視線が交錯し、静寂が続いていく。</p>
+        <p>「それにしても」太郎は首を傾げた。「排泄物処理装置があれば、栄養素と不要成分を取り分けられるなんて凄いな。しかし」彼はまた紙に向かい、「それがあるにもかかわらずウィンナーがない理由は何だろう？」</p>
+        <p>智美もまた思考に耽る。</p>
+        <p>「もし本当にその技術を利用していたら」と太郎が続けた。「私たちの生活はどう変わるんだろう？」</p>
+
+        <p>二人とも資料を見つめている。静かな室内で光は揺れ、風切り音と共に葉っぱを撫でる外気の声だけが聞こえる。</p>
+        <p>智美は再び紙面に目を通し、「それに」彼女もまた呟いた。「排泄物処理装置があるからこそ得られる栄養素とそれがないことで失われた栄養バランス。それがウィンナーの欠如という現象を生んでいる」</p>
+
+        <p>二人が資料を見つめ合う中、薄暗い部屋からは時計の秒刻み音だけが聞こえていた。</p>
+        <p>「でも」太郎は静かに呟き、「その装置があるなら、栄養素を取り分けることができて、それがないことで失われた栄養バランスを補うことも可能じゃないだろうか？」</p>
+
+        <p>智美もまた思考を巡らせている。二人の視線が再び交錯し、室内は静寂に包まれる。</p>
+        <p>「そうだ」と彼女は言葉を探りながら言った。「その装置があるからこそ排泄物からの栄養素を取り分けられるけど」</p>
+        <p>「それがなければ栄養バランスも失われて」太郎もまた考えを続ける。「ウィンナーなど作ることは不可能になる」</p>
+
+        <p>静寂が続く中、二人の思考は深まる。</p>
+        <p>資料に目を通すたび、新たな疑問が生まれる。排泄物処理装置が存在することで世界はどう変わったのか？それは何を意味するのだろう？</p>
+
+        <p>智美と太郎もまた考え続ける。</p>
+
+        <p>夜が深い闇の中に溶け込むようにして消えていく中で、二人は資料を見つめ続けた。</p>
+        <p>「でも」</p>
+        <p>智美は静かに呟いた。「それがなければウィンナーもないってことが何を意味するのか？」</p>
+        <p>外から聞こえる風の音だけ。室内には静寂がただ続く。</p>
+
+        <p>薄暗い部屋の中で、光と影が交差し合う中で二人の思考はまだ続き、その先へと向かっていく。</p>
+        <p>排泄物処理装置という謎を巡る旅が、夜明けと共に新たな章を迎えることだろう。</p>
+      </div>
+    </section>
+    <section class="chapter" id="chapter-5">
+      <div class="chapter-header">
+        <span class="chapter-number">第5章</span>
+        <h2 class="chapter-title">栄養素分離技術との関連性</h2>
+      </div>
+      
+      <div class="chapter-body">
+        <p>第5章　栄養素分離技術との関連性</p>
+
+        <p>薄い曇りが空に広がる朝、アパートの窓から差し込む光が粒子のように揺れている。リビングルームで二人は資料を並べた机に向かい合っている。</p>
+
+        <p>「この装置があれば排泄物問題も解決できるはずだ」と太郎は説明する。「しかし」智美は首を横に振る。「実現すれば新たな問題が生まれて、世界はもっと複雑になる。」</p>
+
+        <p>「それが進歩の代償というものかもしれないね」と太郎は静かにつぶやく。</p>
+
+        <p>二人は栄養素分離装置を見学することに決める。研究所へ向かい、大きなガラスケースの中を覗いた。「ここから余剰物質を取り除き、必要な成分だけを抽出するんだ」と専門家が説明した。</p>
+
+        <p>「つまりこの技術があるために排泄という自然なサイクルがない」太郎は腕組みをする。智美も黙って頷く。</p>
+
+        <p>装置の隣に陳列されたウィンナーの原料となる肉塊を見ると、二人とも顔をしかめる。「これがなければウィンナーメーカーが存在しない」と専門家。「廃棄物処理過程がないからな」</p>
+
+        <p>「つまり、排泄物と栄養素分離技術は密接に関連しているってことか？」智美の声に苦悩があらわれる。</p>
+
+        <p>「そうだ。無視してきた問題だったんだが」太郎も思わずため息をつく。「しかしそれが原因で我々の食生活まで歪められてる」</p>
+
+        <p>窓から外を見ると、遠くの街並みが靄の中でぼんやりと浮かんでいる。二人は改めて互いに見つめる。</p>
+
+        <p>「排泄物問題解決への一歩かもしれないね」と智美。「でもそれが全てを変えることになるんだよな」</p>
+        <p>「そう願いたいけれども」太郎の目には遠くで何かが光っているように見える。</p>
+        <p>研究所の中は静まり返っていた。大きなガラスケースに映る二人の影だけが揺れている。</p>
+
+        <p>街の喧騒とは無縁の時間。「栄養素分離装置」と排泄物問題との関連性を理解した二人だったが、それによってもたらされる変化はまだ誰にも予測できない。</p>
+        <p>青い空と白い雲。そして研究所から見える遠くの街並み。</p>
+
+        <p>光が静かに揺れる。</p>
+      </div>
+    </section>
+    <section class="chapter" id="chapter-6">
+      <div class="chapter-header">
+        <span class="chapter-number">第6章</span>
+        <h2 class="chapter-title">文明の進歩と退行</h2>
+      </div>
+      
+      <div class="chapter-body">
+        <p>第6章　文明の進歩と退行</p>
+
+        <p>雨粒が窓ガラスに刻まれる音。薄暗い部屋で、太郎は机に向かい黙々とメモを取り続けた。智美がコーヒーを入れて戻ると、「考え込んでいた？」彼女は手元にある紅茶のカップを振った。「排泄物」ただその単語だけでも胸に重みを感じる。</p>
+        <p>工場の外、風は冷たく吹き抜けていく。道路には誰もいない。太郎と智美が乗ってきた車は駐車場から少し離れた道端で止まっていた。雨粒がアスファルトを滑り落ちていく音に混じって、遠くではトラックのエンジン音が聞こえる。</p>
+        <p>工場見学への準備として、二人はそれぞれ資料を確認していた。「栄養分と廃棄物が別々に出る装置がある以上」太郎の視線が智美に向かう。「その結果生じた製品がこの世に存在しないという可能性もある」</p>
+
+        <p>そして二人は工場へ向かった。</p>
+        <p>靴音だけが響く通路を進む。壁には排水管やパイプ類が並び、そこから水滴が落ちる小さな音が聞こえてくる。「さっきの装置以外にも廃棄物として処理されるものがあるんです」智美は工場長に説明を求めた。</p>
+        <p>「ウィンナーだけでなく、パンや麺といった多くの製品がこの技術で作られている。しかし同時に、それらを生み出すためには新たな素材が必要になる」</p>
+        <p>天井から垂れ下がる蛍光灯の光が、工場内の冷たい温度と混ざり合い、不安定な影を作っていた。「具体的に何？」太郎は静かに尋ねた。</p>
+        <p>「植物性以外にも動物由来の材料を必要とする製品がある」言葉と共に智美が眉間に皺を寄せた。「それらの原料となる排泄物がないため、製造そのものが不可能になっている」</p>
+
+        <p>工場内を見渡すと、機械が一様に停止していた。壁一面には透明なタンクがあり、それぞれ液体や固体で満ちていた。それが栄養素分離装置を通過して得られたものだとわかった。「排泄物は本来の自然の一部」太郎は思わずつぶやいた。</p>
+        <p>「その廃棄から始まる文明の進化もまた一歩後退しているかもしれないね」と智美が言った。彼女の声には、どこか遠い世界を見ているような響きがあった。</p>
+
+        <p>二人は工場を後にした。「これは単に食品だけではない」太郎は考え込んだ表情で車に戻った。「それは私たち自身の存在すら脅かしている」</p>
+
+        <p>雨粒が窓ガラスから落ちていく音。薄暗さの中に溶け込んでいくように、彼女たちの会話も少しずつ遠ざかる。夜空には満ちる月明かり。</p>
+
+        <p>青い光と赤い光が交差し、アスファルトに反射する。</p>
+        <p>排泄物を忘れた世界は音もなく進んでいた。</p>
+      </div>
+    </section>
+    <section class="chapter" id="chapter-7">
+      <div class="chapter-header">
+        <span class="chapter-number">第7章</span>
+        <h2 class="chapter-title">排泄物の欠如への気づき</h2>
+      </div>
+      
+      <div class="chapter-body">
+        <p>第7章　排泄物の欠如への気づき</p>
+
+        <p>雨粒が街路に細かく散らばる音。その音と、遠いところから聞こえてくる人々の話し声。夜も更けた町は薄暗さが満ちていて、静寂の中に微かな明かりだけが浮かんでいた。</p>
+
+        <p>田中太郎は、街灯の下で立ち止まった。</p>
+        <p>「どうしたんですか？」</p>
+        <p>鈴木智美が振り向く。</p>
+
+        <p>「今日は工場を見たよね。栄養分と排泄物を別々に出す装置があるって……」</p>
+        <p>顔から髪までの線を引き、眉間にしわを作る。「それにしても、『うんこ』がない世界だと、文明は退行してる気がする」</p>
+
+        <p>智美が黙っている。</p>
+        <p>「考えてみて。我々の社会で排泄物を無視すること自体、矛盾だよ」</p>
+        <p>太郎は肩にかかる雨粒を感じながら歩き出す。</p>
+
+        <p>アスファルトから立ち上る蒸気。風向きが変わりそうになると予感させる微かな冷たさ。青白い夜明けの薄ぼんやりとした光を吸収し、街路樹とビル間で反射する。</p>
+        <p>「排泄物は汚染源だ」智美は歩みながら言った。「だからこそ人々が忌避するんだ」</p>
+
+        <p>「でもね……排泄物って、地球の生命維持に必要な要素なんじゃないのか？」太郎は考え込んで止まる。道端を見渡し、どこからともなく漂う静かな匂いを吸い込む。</p>
+
+        <p>智美も立ちどまり、「我々が忌避しているのはその事実自体よりも、それを認めることへの罪悪感かもしれないね」</p>
+        <p>薄暗さの中で顔の表情は見えない。「排泄物があることで文明に矛盾を感じる人が多いんだよ」</p>
+
+        <p>「でも……だからこそ『うんこ』を否定することで、我々自身がもたらす汚染から目をそむけている気がする。その結果として、必要な進化や開発ができなくなってきちゃってるんじゃないかな？ 排泄物がない世界ではウィンナーの存在自体が消えてしまうし」</p>
+        <p>太郎は視線だけ前方に向け続けたまま智美を見つめ返す。</p>
+
+        <p>「それは極論だよ。排泄物を肯定すると文明が進む、というわけじゃない」</p>
+
+        <p>「そうかもしれないけど……『うんこ』があることで得られる何かを我々は失っている気がするんだ」太郎の目には疲労感と困惑があふれている。「排泄物から学べることってたくさんあると思うのに」</p>
+
+        <p>智美もまた考え込んでいた。街灯がその顔に影を作り、表情が読みづらい。</p>
+        <p>「排泄物を無視することで得た平穏は、本当の平和じゃないかもしれないね」</p>
+        <p>微かに風向きが変わったように感じられた。</p>
+
+        <p>太郎と智美はしばらく黙って歩いた。雨粒が地面を叩く音だけ聞こえる。その音色から季節や時間帯を感じ取る。</p>
+        <p>「でも……排泄物があることで世界も人間の心ももっと豊かになれるかもしれない」</p>
+        <p>太郎の声が静寂に響き渡り、彼は智美を見つめた。</p>
+
+        <p>光と闇の境界線。遠くから聞こえてくる人々の話し声と雨粒を叩く音だけが残る。</p>
+      </div>
+    </section>
+    <section class="chapter" id="chapter-8">
+      <div class="chapter-header">
+        <span class="chapter-number">第8章</span>
+        <h2 class="chapter-title">忌まわしい真実</h2>
+      </div>
+      
+      <div class="chapter-body">
+        <p>第8章　忌まわしい真実</p>
+
+        <p>雨粒が窓ガラスに叩きつけ、室内は薄暗さと静寂で満たされていた。冷房の風が部屋全体を包み込み、彼女たちの息遣いだけが僅かな音となって響く。田中太郎と鈴木智美は互いの顔を見合わせ、視線だけで言葉を交わす。</p>
+
+        <p>「あの街角にあったウィンナー専門店」智美の声が静寂の中に浮かび上がる。「もうないよね」</p>
+
+        <p>雨音と空調の冷たさを感じながら、太郎も呟いた。「そうだ。どこにもそんな店は存在しないんだよ」</p>
+
+        <p>排水溝から漂ってくるわずかな湿り気の中、二人は何度も同じ話題を繰り返してきたが、その重みは今初めて理解したかのように彼らの心に深く刻まれていた。</p>
+
+        <p>「でも」智美が口を開き、「それが何故？」と問いかけた。「文明の進歩って一体なんだったのか」</p>
+
+        <p>窓から見える雨粒が夜空へ吸い込まれていく様子を眺めながら、太郎はゆっくりと言葉を探す。それまで互いに忌み嫌っていた排泄物から、世界は何度も救われてきた。</p>
+
+        <p>「もし」彼女たちの視線が絡まる。「この世の中にうんこがあったら？」</p>
+
+        <p>智美の表情は曇り、しかし同時に不思議な興奮を帯びていた。雨粒は依然としてガラス面に降り注ぐ。冷たい風が窓枠から部屋に入り込み、ふとした瞬間に二人はその光景を見つめ返していた。</p>
+
+        <p>「ウィンナーもまた」太郎の言葉が静寂を揺さぶる。「他の何かと同様、自然との繋がりを持っていたんだ」</p>
+
+        <p>彼女の表情が変わった。それが忌まわしい真実であることを理解したのだ。</p>
+
+        <p>雨粒は音もなく部屋に流れ込んだらしく、窓ガラスの外側から水滴が伝い落ちていくのが見えただけだった。二人は何も言葉を交わさず、しかし互いの存在を通じて深く理解していた。</p>
+        <p>静寂の中で彼らの視線だけが触れ合った。</p>
+
+        <p>雨粒が地面に落ちる音と鼓動だけが聞こえる中、彼女たちの思考は遠くまで広がり始めていた。</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>もしうんこがなければウィンナーはなかった</p>
+    <p>Generated locally with Ollama + Stable Diffusion</p>
+  </footer>
+
+
+  <button class="tts-fab" id="ttsFab" onclick="ttsToggle()" title="Read aloud">
+    <span id="ttsFabIcon">&#x1f50a;</span>
+  </button>
+  <div class="tts-bar" id="ttsBar">
+    <button onclick="ttsPause()" id="ttsPauseBtn">&#x23f8;</button>
+    <button onclick="ttsStop()">&#x23f9;</button>
+    <button onclick="ttsPrev()">&#x23ee;</button>
+    <button onclick="ttsNext()">&#x23ed;</button>
+    <span class="tts-info" id="ttsInfo">Ready</span>
+    <span class="tts-speed">
+      <input type="range" id="ttsSpeed" min="0.5" max="2.0" step="0.1"
+             value="1.0" onchange="ttsSetSpeed(this.value)" />
+      <span id="ttsSpeedVal">1.0x</span>
+    </span>
+  </div>
+
+  <button class="mode-toggle" onclick="toggleMode()">🌗 表示切替</button>
+
+  <script>
+    // Reading mode
+    function toggleMode() {
+      document.body.classList.toggle('light');
+      localStorage.setItem('mode', document.body.classList.contains('light') ? 'light' : 'dark');
+    }
+    if (localStorage.getItem('mode') === 'light') document.body.classList.add('light');
+
+    // Scroll progress
+    window.addEventListener('scroll', () => {
+      const h = document.documentElement;
+      const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+      document.getElementById('progress').style.width = pct + '%';
+    });
+
+    // === TTS (Web Speech API) ===
+    const synth = window.speechSynthesis;
+    let ttsChs = [], ttsI = 0, ttsRate = 1.0, ttsOn = false, ttsPd = false;
+
+    document.querySelectorAll('.chapter').forEach((sec, i) => {
+      const b = sec.querySelector('.chapter-body');
+      const t = sec.querySelector('.chapter-title');
+      if (b) ttsChs.push({
+        title: t ? t.textContent : ('Ch.' + (i+1)),
+        text: b.textContent.trim(), el: sec
+      });
+    });
+
+    function ttsToggle() {
+      if (!synth) { alert('Speech not supported'); return; }
+      if (ttsOn) { ttsStop(); return; }
+      const sy = window.scrollY + window.innerHeight / 3;
+      let cl = 0;
+      ttsChs.forEach((c, i) => { if (c.el.offsetTop <= sy) cl = i; });
+      ttsI = cl; ttsOn = true; ttsPd = false;
+      document.getElementById('ttsFab').classList.add('speaking');
+      document.getElementById('ttsFabIcon').innerHTML = '&#x23f9;';
+      document.getElementById('ttsBar').classList.add('active');
+      _ttsRead();
+    }
+
+    function _ttsRead() {
+      if (ttsI >= ttsChs.length) { ttsStop(); return; }
+      synth.cancel();
+      const ch = ttsChs[ttsI];
+      document.getElementById('ttsInfo').textContent = ch.title;
+      ch.el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      // Split by Japanese sentence endings for reliable playback
+      const sents = ch.text.match(/[^。！？
+]+[。！？]?/g) || [ch.text];
+      let si = 0;
+
+      function next() {
+        if (!ttsOn) return;
+        if (si >= sents.length) {
+          ttsI++;
+          if (ttsI < ttsChs.length) setTimeout(_ttsRead, 800);
+          else ttsStop();
+          return;
+        }
+        const u = new SpeechSynthesisUtterance(sents[si].trim());
+        u.lang = 'ja-JP'; u.rate = ttsRate;
+        const vs = synth.getVoices();
+        const jv = vs.find(v => v.lang && v.lang.startsWith('ja'));
+        if (jv) u.voice = jv;
+        u.onend = () => { si++; next(); };
+        u.onerror = () => { si++; next(); };
+        synth.speak(u);
+      }
+      next();
+    }
+
+    function ttsPause() {
+      if (!ttsOn) return;
+      if (ttsPd) {
+        synth.resume(); ttsPd = false;
+        document.getElementById('ttsPauseBtn').innerHTML = '&#x23f8;';
+      } else {
+        synth.pause(); ttsPd = true;
+        document.getElementById('ttsPauseBtn').innerHTML = '&#x25b6;';
+      }
+    }
+
+    function ttsStop() {
+      synth.cancel(); ttsOn = false; ttsPd = false;
+      document.getElementById('ttsFab').classList.remove('speaking');
+      document.getElementById('ttsFabIcon').innerHTML = '&#x1f50a;';
+      document.getElementById('ttsBar').classList.remove('active');
+      document.getElementById('ttsInfo').textContent = 'Ready';
+      document.getElementById('ttsPauseBtn').innerHTML = '&#x23f8;';
+    }
+
+    function ttsNext() { if (ttsOn && ttsI < ttsChs.length - 1) { ttsI++; _ttsRead(); } }
+    function ttsPrev() { if (ttsOn && ttsI > 0) { ttsI--; _ttsRead(); } }
+    function ttsSetSpeed(v) {
+      ttsRate = parseFloat(v);
+      document.getElementById('ttsSpeedVal').textContent = v + 'x';
+    }
+    if (synth) synth.onvoiceschanged = () => synth.getVoices();
+
+    /* ─── Carousel ─── */
+    (function() {
+      const track = document.getElementById('carouselTrack');
+      if (!track) return;
+      const dots = track.parentElement.querySelectorAll('.carousel-dot');
+      const slides = track.querySelectorAll('.carousel-slide');
+      if (slides.length < 1) return;
+      function updateDots() {
+        const sw = slides[0].offsetWidth + 14;
+        const idx = Math.round(track.scrollLeft / sw);
+        dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+      }
+      track.addEventListener('scroll', updateDots, { passive: true });
+      dots.forEach(d => d.addEventListener('click', () => {
+        const sw = slides[0].offsetWidth + 14;
+        track.scrollTo({ left: parseInt(d.dataset.idx) * sw, behavior: 'smooth' });
+      }));
+      let paused = false, timer = setInterval(() => {
+        if (paused) return;
+        const sw = slides[0].offsetWidth + 14;
+        const mx = track.scrollWidth - track.clientWidth;
+        const nx = track.scrollLeft + sw;
+        track.scrollTo({ left: nx > mx ? 0 : nx, behavior: 'smooth' });
+      }, 4000);
+      track.addEventListener('touchstart', () => { paused = true; clearInterval(timer); }, { passive: true });
+      track.addEventListener('touchend', () => {
+        paused = false;
+        timer = setInterval(() => {
+          if (paused) return;
+          const sw = slides[0].offsetWidth + 14;
+          const mx = track.scrollWidth - track.clientWidth;
+          const nx = track.scrollLeft + sw;
+          track.scrollTo({ left: nx > mx ? 0 : nx, behavior: 'smooth' });
+        }, 4000);
+      }, { passive: true });
+    })();
+
+  </script>
+</body>
+</html>
